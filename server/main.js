@@ -34,6 +34,16 @@ app.get("/", (req, res) => {
     res.status(200).send("App is working!");
 });
 
+app.get("/products", async (req, res) => {
+    try {
+        let products = await Product.find();
+        res.status(200).send(products);
+    } catch (error) {
+        console.log(error);
+        res.status(400).send("Something went wrong!");
+    }
+});
+
 app.post("/product", async (req, res) => {
     let { uniqueId, name, qty, description } = req.body;
     console.log(uniqueId, name, qty, description);
