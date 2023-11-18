@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { AppDataContext } from "../providers/appDataProvider";
 import UserDataPage from "./UserDataPage";
 import QrScanner from "./QrScanner";
@@ -47,11 +47,29 @@ const Navigator = () => {
             </div>
             <div>{showAuthenticator && <Authenticator />}</div>
             <div>{qrData}</div>
-            <div>
-                <button onClick={handleShowScanner}>Scan Product QR</button>
+            <div
+                style={{
+                    padding: 10,
+                    textAlign: "center",
+                }}
+            >
+                <button
+                    style={{ fontSize: "1.2rem" }}
+                    onClick={handleShowScanner}
+                >
+                    Scan Product QR
+                </button>
             </div>
-            <div>
-                <button onClick={handleShowAuthenticator}>
+            <div
+                style={{
+                    padding: 10,
+                    textAlign: "center",
+                }}
+            >
+                <button
+                    style={{ fontSize: "1.2rem" }}
+                    onClick={handleShowAuthenticator}
+                >
                     Authenticate Product
                 </button>
             </div>

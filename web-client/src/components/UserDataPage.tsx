@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { LocationInterface } from "../providers/appDataProvider";
 
 interface UserDataPageProps {
@@ -15,7 +15,6 @@ interface UserDataPageProps {
 const UserDataPage = ({
     mobileNumber,
     setMobileNumber,
-    location,
     setLocation,
 }: UserDataPageProps) => {
     let handleGetLocation = () => {
@@ -48,16 +47,34 @@ const UserDataPage = ({
 
     return (
         <>
-            <div>
+            <div
+                style={{
+                    textAlign: "center",
+                    paddingTop: 50,
+                }}
+            >
                 <input
                     type="text"
                     placeholder="Enter Mobile Number"
                     value={mobileNumber}
                     onChange={handleMobileInput}
+                    style={{
+                        fontSize: "1.2rem",
+                    }}
                 />
             </div>
-            <div>
-                <button onClick={handleGetLocation}>Get Location</button>
+            <div
+                style={{
+                    padding: "10px 0px",
+                    textAlign: "center",
+                }}
+            >
+                <button
+                    style={{ fontSize: "1rem" }}
+                    onClick={handleGetLocation}
+                >
+                    Get Location
+                </button>
             </div>
         </>
     );

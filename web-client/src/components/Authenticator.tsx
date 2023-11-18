@@ -1,12 +1,13 @@
-import React, { useState, useEffect, useContext } from "react";
-import { AppDataContext } from "../providers/appDataProvider";
 import { ethers, keccak256, toUtf8Bytes } from "ethers";
-import { ADDRESS, ABI } from "../contracts/ProductCollection";
+import { useContext, useEffect, useState } from "react";
 import { sendDataToServer } from "../apis/authentication";
+import { ABI, ADDRESS } from "../contracts/ProductCollection";
+import { AppDataContext } from "../providers/appDataProvider";
 
 interface ProdData {
     uniqueId: string;
     name: string;
+    qty: string;
     description: string;
 }
 
@@ -69,6 +70,7 @@ const Authenticator = () => {
         let prod = await sendDataToServer({ sc_id, qrData, key });
         setError(false);
         console.log(prod);
+        setProdData(prod as ProdData);
         setMessage("Product is Authentic!");
     };
 
@@ -106,6 +108,25 @@ const Authenticator = () => {
             <h5 style={{ color: error ? "red" : "green", fontSize: "1.5rem" }}>
                 {message}
             </h5>
+            {prodData && (
+                <>
+                    <p>
+                        <b>Unique ID : </b> {prodData.uniqueId}
+                    </p>
+                    <p>
+                        <b>Name : </b>
+                        {prodData.name}
+                    </p>
+                    <p>
+                        <b>Qty : </b>
+                        {prodData.qty}
+                    </p>
+                    <p>
+                        <b>Description : </b>
+                        {prodData.description}
+                    </p>
+                </>
+            )}
         </div>
     );
 };
