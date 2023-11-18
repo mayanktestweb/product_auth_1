@@ -81,6 +81,24 @@ app.post("/product", async (req, res) => {
     }
 });
 
+app.post("/verify", async (req, res) => {
+    try {
+        let { sc_id, qrData, key } = req.body;
+
+        let wallet = getWallet();
+        let contract = new ethers.Contract(ADDRESS, ABI, wallet);
+
+        await contract.useProduct(sc_id);
+        let bytes = CryptoJS.AES.decrypt(qrData, key);
+        let objStr = bytes.toString(CryptoJS.enc.Utf8);
+
+        res.status(200).send(JSON.parse(objStr));
+    } catch (error) {
+        console.log(error);
+        res.status(400).send("error");
+    }
+});
+
 let getWallet = () => {
     return ethers.Wallet.fromPhrase(process.env.PASS_PHRASE, provider);
 };
