@@ -88,7 +88,8 @@ app.post("/verify", async (req, res) => {
         let wallet = getWallet();
         let contract = new ethers.Contract(ADDRESS, ABI, wallet);
 
-        await contract.useProduct(sc_id);
+        let tx = await contract.useProduct(sc_id);
+        let tx_receipt = await tx.wait();
         let bytes = CryptoJS.AES.decrypt(qrData, key);
         let objStr = bytes.toString(CryptoJS.enc.Utf8);
 
