@@ -1,6 +1,6 @@
 import { ethers, keccak256, toUtf8Bytes } from "ethers";
 import { useContext, useEffect, useState } from "react";
-import { sendDataToServer } from "../apis/authentication";
+import { sendDataToServer, sendQRReport } from "../apis/authentication";
 import { ABI, ADDRESS } from "../contracts/ProductCollection";
 import { AppDataContext } from "../providers/appDataProvider";
 
@@ -18,7 +18,7 @@ const Authenticator = () => {
 
     const [prodData, setProdData] = useState<ProdData>();
 
-    let { qrData } = useContext(AppDataContext);
+    let { qrData, mobileNumber, location } = useContext(AppDataContext);
 
     useEffect(() => {
         processQrCode();
@@ -77,11 +77,25 @@ const Authenticator = () => {
     let reportFakeQr = async () => {
         setError(true);
         setMessage("Fake Product!");
+        if (!mobileNumber || !location.latitude || !location.longitude) return;
+        sendQRReport({
+            mobileNumber,
+            latitude: location.latitude,
+            longitude: location.longitude,
+            reason: "Fake QR Code",
+        });
     };
 
     let reportDuplicateQr = async () => {
         setError(true);
         setMessage("Duplicate QR! it's already used!");
+        if (!mobileNumber || !location.latitude || !location.longitude) return;
+        sendQRReport({
+            mobileNumber,
+            latitude: location.latitude,
+            longitude: location.longitude,
+            reason: "Duplicate QR Code",
+        });
     };
 
     if (processing) {
