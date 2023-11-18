@@ -3,10 +3,15 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import Production from "./views/Production";
 import Inventory from "./views/Inventory";
+import QrReports from "./views/QrReports";
 //import "./App.css";
 
+const PROD = "production";
+const INVT = "inventory";
+const RPRT = "reports";
+
 function App() {
-    const [showProduction, setShowProduction] = useState(true);
+    const [view, setView] = useState(PROD);
 
     return (
         <>
@@ -21,24 +26,35 @@ function App() {
             >
                 <h5
                     style={{
-                        color: showProduction ? "dodgerblue" : "darkgray",
+                        color: view == PROD ? "dodgerblue" : "darkgray",
                         cursor: "pointer",
                     }}
-                    onClick={() => setShowProduction(true)}
+                    onClick={() => setView(PROD)}
                 >
                     Production
                 </h5>
                 <h5
                     style={{
-                        color: showProduction ? "darkgray" : "dodgerblue",
+                        color: view == INVT ? "dodgerblue" : "darkgray",
                         cursor: "pointer",
                     }}
-                    onClick={() => setShowProduction(false)}
+                    onClick={() => setView(INVT)}
                 >
                     Inventory
                 </h5>
+                <h5
+                    style={{
+                        color: view == RPRT ? "dodgerblue" : "darkgray",
+                        cursor: "pointer",
+                    }}
+                    onClick={() => setView(RPRT)}
+                >
+                    Reports
+                </h5>
             </div>
-            {showProduction ? <Production /> : <Inventory />}
+            {view == PROD && <Production />}
+            {view == INVT && <Inventory />}
+            {view == RPRT && <QrReports />}
         </>
     );
 }
