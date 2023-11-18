@@ -29,6 +29,7 @@ let provider = ethers.getDefaultProvider(process.env.MUMBAI_RPC_URL);
 
 const { ADDRESS, ABI } = require("./contracts/ProductCollection");
 const Product = require("./models/Product");
+const QRReport = require("./models/QRReport");
 
 app.get("/", (req, res) => {
     res.status(200).send("App is working!");
@@ -103,6 +104,34 @@ app.post("/verify", async (req, res) => {
 let getWallet = () => {
     return ethers.Wallet.fromPhrase(process.env.PASS_PHRASE, provider);
 };
+
+app.get("/qr_reports", async (req, res) => {
+    try {
+        let reports = await QRReport.find();
+        res.status(200).send(reports);
+    } catch (error) {
+        console.log(error);
+        res.status(400).send("error");
+    }
+});
+
+app.post("/qr_reports", async (req, res) => {
+    let { mobileNumber, latitude, longitude, reason } = req.body;
+    try {
+        let report = new QRReport({
+            mobileNumber,
+            latitude,
+            longitude,
+            reason,
+        });
+        await report.save();
+
+        res.status(200).send("done!");
+    } catch (error) {
+        console.log(error);
+        res.status(400).send("error!");
+    }
+});
 
 const PORT = process.env.PORT || 8080;
 
