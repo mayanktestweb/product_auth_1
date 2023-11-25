@@ -32,7 +32,7 @@ const Product = require("./models/Product");
 const QRReport = require("./models/QRReport");
 
 app.get("/", (req, res) => {
-    res.status(200).send("App is working!");
+    res.status(200).send("App is working! - 2");
 });
 
 app.get("/products", async (req, res) => {
@@ -46,13 +46,22 @@ app.get("/products", async (req, res) => {
 });
 
 app.post("/product", async (req, res) => {
-    let { uniqueId, name, qty, description } = req.body;
+    let { uniqueId, name, qty, description, batch_id, lot_id, mfg_date } =
+        req.body;
     console.log(uniqueId, name, qty, description);
     let wallet = getWallet();
 
     try {
         let contract = new ethers.Contract(ADDRESS, ABI, wallet);
-        let str_data = JSON.stringify({ uniqueId, name, qty, description });
+        let str_data = JSON.stringify({
+            uniqueId,
+            name,
+            qty,
+            description,
+            batch_id,
+            lot_id,
+            mfg_date,
+        });
         let key = Math.floor(Math.random() * 1000000).toString();
 
         let qr_data = CryptoJS.AES.encrypt(str_data, key).toString();
@@ -69,6 +78,9 @@ app.post("/product", async (req, res) => {
             name,
             qty,
             description,
+            batch_id,
+            lot_id,
+            mfg_date,
             sc_id,
             qr_data,
             tx_hash,
