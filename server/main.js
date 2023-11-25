@@ -30,6 +30,7 @@ let provider = ethers.getDefaultProvider(process.env.MUMBAI_RPC_URL);
 const { ADDRESS, ABI } = require("./contracts/ProductCollection");
 const Product = require("./models/Product");
 const QRReport = require("./models/QRReport");
+const User = require("./models/User");
 
 app.get("/", (req, res) => {
     res.status(200).send("App is working! - 2");
@@ -143,6 +144,30 @@ app.post("/qr_reports", async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(400).send("error!");
+    }
+});
+
+app.get("/user/:mobileNumber", async (req, res) => {
+    let { mobileNumber } = req.params;
+    try {
+        let user = await User.find({ mobileNumber });
+        res.status(200).send(user);
+    } catch (error) {
+        console.log(error);
+        res.status(400).send("Failed to get User!");
+    }
+});
+
+app.post("/user", async (req, res) => {
+    try {
+        let { name, mobileNumber } = req.body;
+        let user = new User({ name, mobileNumber });
+        await user.save();
+
+        res.status(200).send("Done!");
+    } catch (error) {
+        console.log(error);
+        res.status(400).send("Failed to save User!");
     }
 });
 
