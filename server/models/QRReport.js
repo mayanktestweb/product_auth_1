@@ -4,6 +4,7 @@ let schema = mongoose.Schema({
     mobileNumber: String,
     latitude: Number,
     longitude: Number,
+    product_name: String,
     reason: String,
 });
 

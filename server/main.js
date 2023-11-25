@@ -128,12 +128,13 @@ app.get("/qr_reports", async (req, res) => {
 });
 
 app.post("/qr_reports", async (req, res) => {
-    let { mobileNumber, latitude, longitude, reason } = req.body;
+    let { mobileNumber, latitude, longitude, product_name, reason } = req.body;
     try {
         let report = new QRReport({
             mobileNumber,
             latitude,
             longitude,
+            product_name,
             reason,
         });
         await report.save();
