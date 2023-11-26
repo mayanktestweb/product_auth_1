@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { AppDataContext } from "../providers/appDataProvider";
 import UserDataPage from "./UserDataPage";
+import UserGeolocation from "./UserGeolocation";
 import QrScanner from "./QrScanner";
 import Authenticator from "./Authenticator";
 
@@ -15,16 +16,22 @@ const Navigator = () => {
         setMobileNumber,
         qrData,
         setQrData,
+        name,
+        setName,
     } = React.useContext(AppDataContext);
 
-    if (!location.latitude || !location.longitude || !mobileNumber) {
+    if (!mobileNumber) {
         return (
             <UserDataPage
-                location={location}
-                setLocation={setLocation}
+                name={name}
+                setName={setName}
                 mobileNumber={mobileNumber}
                 setMobileNumber={setMobileNumber}
             />
+        );
+    } else if (mobileNumber && (!location.latitude || !location.longitude)) {
+        return (
+            <UserGeolocation location={location} setLocation={setLocation} />
         );
     }
 

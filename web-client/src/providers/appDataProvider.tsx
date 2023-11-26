@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
 export interface LocationInterface {
     latitude: number | undefined;
@@ -8,6 +8,8 @@ export interface LocationInterface {
 export interface AppDataContextInterface {
     location: LocationInterface;
     setLocation: React.Dispatch<React.SetStateAction<LocationInterface>>;
+    name: string | undefined;
+    setName: React.Dispatch<React.SetStateAction<string | undefined>>;
     mobileNumber: string | undefined;
     setMobileNumber: React.Dispatch<React.SetStateAction<string | undefined>>;
     qrData: string | undefined;
@@ -27,14 +29,34 @@ export const AppDataProvider = ({
         latitude: undefined,
         longitude: undefined,
     });
+    const [name, setName] = useState<string | undefined>();
     const [mobileNumber, setMobileNumber] = useState<string | undefined>();
     const [qrData, setQrData] = useState<string>();
+
+    useEffect(() => {
+        let userStr = localStorage.getItem("user");
+        if (userStr && userStr.length) {
+            let user = JSON.parse(userStr);
+            let { name, mobileNumber } = user;
+            setName(name);
+            setMobileNumber(mobileNumber);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (name && mobileNumber) {
+            let str = JSON.stringify({ name, mobileNumber });
+            localStorage.setItem("user", str);
+        }
+    }, [name, mobileNumber]);
 
     return (
         <AppDataContext.Provider
             value={{
                 location,
                 setLocation,
+                name,
+                setName,
                 mobileNumber,
                 setMobileNumber,
                 qrData,

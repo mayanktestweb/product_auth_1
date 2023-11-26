@@ -1,43 +1,26 @@
 import React from "react";
-import { LocationInterface } from "../providers/appDataProvider";
+import { Box, Tabs, Tab, AppBar } from "@mui/material";
+import RegisterUser from "./RegisterUser";
+import LoginUser from "./LoginUser";
 
 interface UserDataPageProps {
+    name: string | undefined;
+    setName:
+        | React.Dispatch<React.SetStateAction<string | undefined>>
+        | undefined;
     mobileNumber: string | undefined;
     setMobileNumber:
         | React.Dispatch<React.SetStateAction<string | undefined>>
-        | undefined;
-    location: LocationInterface;
-    setLocation:
-        | React.Dispatch<React.SetStateAction<LocationInterface>>
         | undefined;
 }
 
 const UserDataPage = ({
     mobileNumber,
     setMobileNumber,
-    setLocation,
+    name,
+    setName,
 }: UserDataPageProps) => {
-    let handleGetLocation = () => {
-        let locationG = navigator.geolocation;
-
-        console.log(locationG);
-
-        locationG.getCurrentPosition(
-            (data) => {
-                console.log(mobileNumber);
-                console.log(data.coords.latitude, data.coords.longitude);
-                if (!setLocation) return;
-                setLocation({
-                    latitude: data.coords.latitude,
-                    longitude: data.coords.longitude,
-                });
-            },
-            (err) => {
-                console.log("error!");
-                console.log(err);
-            }
-        );
-    };
+    const [tabIndex, setTabIndex] = React.useState(0);
 
     let handleMobileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (setMobileNumber) {
@@ -45,39 +28,65 @@ const UserDataPage = ({
         }
     };
 
+    function a11yProps(index: number) {
+        return {
+            id: `simple-tab-${index}`,
+            "aria-controls": `simple-tabpanel-${index}`,
+        };
+    }
+
+    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+        setTabIndex(newValue);
+    };
+
     return (
         <>
-            <div
-                style={{
-                    textAlign: "center",
-                    paddingTop: 50,
-                }}
-            >
-                <input
-                    type="text"
-                    placeholder="Enter Mobile Number"
-                    value={mobileNumber}
-                    onChange={handleMobileInput}
-                    style={{
-                        fontSize: "1.2rem",
-                    }}
-                />
-            </div>
-            <div
-                style={{
-                    padding: "10px 0px",
-                    textAlign: "center",
-                }}
-            >
-                <button
-                    style={{ fontSize: "1rem" }}
-                    onClick={handleGetLocation}
+            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <Tabs
+                    value={tabIndex}
+                    onChange={handleChange}
+                    aria-label="basic tabs example"
                 >
-                    Get Location
-                </button>
-            </div>
+                    <Tab label="Register" {...a11yProps(0)} />
+                    <Tab label="Login" {...a11yProps(1)} />
+                </Tabs>
+            </Box>
+            <CustomTabPanel value={tabIndex} index={0}>
+                <RegisterUser
+                    setName={setName}
+                    setMobileNumber={setMobileNumber}
+                />
+            </CustomTabPanel>
+            <CustomTabPanel value={tabIndex} index={1}>
+                <LoginUser
+                    setName={setName}
+                    setMobileNumber={setMobileNumber}
+                />
+            </CustomTabPanel>
         </>
     );
 };
+
+interface TabPanelProps {
+    children?: React.ReactNode;
+    index: number;
+    value: number;
+}
+
+function CustomTabPanel(props: TabPanelProps) {
+    const { children, value, index, ...other } = props;
+
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+            {...other}
+        >
+            {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+        </div>
+    );
+}
 
 export default UserDataPage;

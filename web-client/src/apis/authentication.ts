@@ -1,5 +1,8 @@
 import axios from "axios";
 
+//let BASE_URL = "https://crocket-dune.publicvm.com";
+let BASE_URL = "http://localhost:8080";
+
 export const sendDataToServer = ({
     sc_id,
     qrData,
@@ -10,7 +13,7 @@ export const sendDataToServer = ({
     key: string;
 }) => {
     return new Promise((resolve, reject) => {
-        let url = "http://localhost:8080/verify";
+        let url = BASE_URL + "/verify";
 
         axios({
             method: "POST",
@@ -34,7 +37,7 @@ export const sendQRReport = ({
     reason: string;
 }) => {
     return new Promise((resolve, reject) => {
-        let url = "http://localhost:8080/qr_reports";
+        let url = BASE_URL + "/qr_reports";
         axios({
             method: "POST",
             url,
@@ -47,7 +50,7 @@ export const sendQRReport = ({
 
 export const fetchQrReports = () => {
     return new Promise((resolve, reject) => {
-        let url = "http://localhost:8080/qr_reports";
+        let url = BASE_URL + "/qr_reports";
         axios({
             url,
             method: "GET",
