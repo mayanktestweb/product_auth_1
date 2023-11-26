@@ -21,7 +21,7 @@ export const saveUser = ({
             method: "POST",
             data: { name, mobileNumber },
         })
-            .then((res) => resolve("done!"))
+            .then((res) => resolve(res.status))
             .catch((err) => reject(err));
     });
 };

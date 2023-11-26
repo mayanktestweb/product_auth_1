@@ -1,32 +1,19 @@
 import React from "react";
-import { Box, Tabs, Tab, AppBar } from "@mui/material";
+import { Box, Tabs, Tab } from "@mui/material";
 import RegisterUser from "./RegisterUser";
 import LoginUser from "./LoginUser";
 
 interface UserDataPageProps {
-    name: string | undefined;
     setName:
         | React.Dispatch<React.SetStateAction<string | undefined>>
         | undefined;
-    mobileNumber: string | undefined;
     setMobileNumber:
         | React.Dispatch<React.SetStateAction<string | undefined>>
         | undefined;
 }
 
-const UserDataPage = ({
-    mobileNumber,
-    setMobileNumber,
-    name,
-    setName,
-}: UserDataPageProps) => {
+const UserDataPage = ({ setMobileNumber, setName }: UserDataPageProps) => {
     const [tabIndex, setTabIndex] = React.useState(0);
-
-    let handleMobileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (setMobileNumber) {
-            setMobileNumber(e.target.value);
-        }
-    };
 
     function a11yProps(index: number) {
         return {
@@ -36,6 +23,7 @@ const UserDataPage = ({
     }
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+        console.log(event);
         setTabIndex(newValue);
     };
 

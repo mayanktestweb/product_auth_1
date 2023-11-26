@@ -1,5 +1,12 @@
 import React from "react";
 import { LocationInterface } from "../providers/appDataProvider";
+import {
+    Card,
+    CardActions,
+    CardContent,
+    Typography,
+    Button,
+} from "@mui/material";
 
 interface UserGeolocationProps {
     location: LocationInterface;
@@ -31,9 +38,28 @@ const UserGeolocation = ({ setLocation }: UserGeolocationProps) => {
     };
 
     return (
-        <div>
-            <button onClick={handleGetLocation}>Get Location</button>
-        </div>
+        <Card>
+            <CardContent>
+                <Typography color="#999" style={{ textAlign: "center" }}>
+                    This app needs to know your current location!
+                </Typography>
+            </CardContent>
+            <CardActions
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+            >
+                <Button
+                    variant="contained"
+                    color="success"
+                    onClick={handleGetLocation}
+                >
+                    Get Location
+                </Button>
+            </CardActions>
+        </Card>
     );
 };
 

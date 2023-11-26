@@ -4,6 +4,7 @@ import UserDataPage from "./UserDataPage";
 import UserGeolocation from "./UserGeolocation";
 import QrScanner from "./QrScanner";
 import Authenticator from "./Authenticator";
+import { Button } from "@mui/material";
 
 const Navigator = () => {
     const [showScanner, setShowScanner] = useState(false);
@@ -16,18 +17,12 @@ const Navigator = () => {
         setMobileNumber,
         qrData,
         setQrData,
-        name,
         setName,
     } = React.useContext(AppDataContext);
 
     if (!mobileNumber) {
         return (
-            <UserDataPage
-                name={name}
-                setName={setName}
-                mobileNumber={mobileNumber}
-                setMobileNumber={setMobileNumber}
-            />
+            <UserDataPage setName={setName} setMobileNumber={setMobileNumber} />
         );
     } else if (mobileNumber && (!location.latitude || !location.longitude)) {
         return (
@@ -60,12 +55,9 @@ const Navigator = () => {
                     textAlign: "center",
                 }}
             >
-                <button
-                    style={{ fontSize: "1.2rem" }}
-                    onClick={handleShowScanner}
-                >
+                <Button onClick={handleShowScanner} variant="outlined">
                     Scan Product QR
-                </button>
+                </Button>
             </div>
             <div
                 style={{
@@ -73,12 +65,9 @@ const Navigator = () => {
                     textAlign: "center",
                 }}
             >
-                <button
-                    style={{ fontSize: "1.2rem" }}
-                    onClick={handleShowAuthenticator}
-                >
+                <Button onClick={handleShowAuthenticator} variant="contained">
                     Authenticate Product
-                </button>
+                </Button>
             </div>
         </>
     );
