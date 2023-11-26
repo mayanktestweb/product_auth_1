@@ -3,18 +3,30 @@ import { useContext, useEffect, useState } from "react";
 import { sendDataToServer, sendQRReport } from "../apis/authentication";
 import { ABI, ADDRESS } from "../contracts/ProductCollection";
 import { AppDataContext } from "../providers/appDataProvider";
+import {
+    TextField,
+    Typography,
+    Button,
+    Card,
+    CardContent,
+    CardActions,
+} from "@mui/material";
 
 interface ProdData {
     uniqueId: string;
     name: string;
     qty: string;
     description: string;
+    batch_id: string;
+    lot_id: string;
+    mfg_date: number;
 }
 
 const Authenticator = () => {
     const [processing, setProcessing] = useState(false);
-    const [error, setError] = useState(false);
     const [message, setMessage] = useState("");
+    const [reportAlert, setReportAlert] = useState("");
+    const [productName, setProductName] = useState("");
 
     const [prodData, setProdData] = useState<ProdData>();
 
@@ -32,7 +44,6 @@ const Authenticator = () => {
             await validateOnSmartContract();
         } catch (error) {
             console.log(error);
-            setError(true);
             setMessage("Something went wrong!");
         } finally {
             setProcessing(false);
@@ -54,9 +65,11 @@ const Authenticator = () => {
         let prod = await contract.collection(id);
         console.log(prod[0], prod[1], prod[2]);
         if (parseInt(prod[0]) == 0) {
-            await reportFakeQr();
+            setReportAlert("fake_qr");
+            setMessage("Fake Product!");
         } else if (prod[1]) {
-            await reportDuplicateQr();
+            setReportAlert("duplicate_qr");
+            setMessage("Duplicate QR! it's already used!");
         } else {
             await forwardToServer(prod[0], qrData, prod[2]);
         }
@@ -68,33 +81,30 @@ const Authenticator = () => {
         key: string
     ) => {
         let prod = await sendDataToServer({ sc_id, qrData, key });
-        setError(false);
         console.log(prod);
         setProdData(prod as ProdData);
         setMessage("Product is Authentic!");
     };
 
     let reportFakeQr = async () => {
-        setError(true);
-        setMessage("Fake Product!");
         if (!mobileNumber || !location.latitude || !location.longitude) return;
         sendQRReport({
             mobileNumber,
             latitude: location.latitude,
             longitude: location.longitude,
             reason: "Fake QR Code",
+            product_name: productName,
         });
     };
 
     let reportDuplicateQr = async () => {
-        setError(true);
-        setMessage("Duplicate QR! it's already used!");
         if (!mobileNumber || !location.latitude || !location.longitude) return;
         sendQRReport({
             mobileNumber,
             latitude: location.latitude,
             longitude: location.longitude,
             reason: "Duplicate QR Code",
+            product_name: productName,
         });
     };
 
@@ -117,11 +127,74 @@ const Authenticator = () => {
         );
     }
 
+    let handleQrReport = async () => {
+        if (!productName) return alert("Please enter the product name");
+        setProcessing(true);
+        try {
+            if (reportAlert == "duplicate_qr") {
+                await reportDuplicateQr();
+            } else {
+                await reportFakeQr();
+            }
+            alert("Thank you for reporting!");
+        } catch (error) {
+            console.log(error);
+            alert("Failed to report");
+        } finally {
+            setProcessing(false);
+        }
+    };
+
     return (
         <div style={{ padding: 10 }}>
-            <h5 style={{ color: error ? "red" : "green", fontSize: "1.5rem" }}>
-                {message}
-            </h5>
+            {reportAlert.length ? (
+                <Card>
+                    <CardContent>
+                        <Typography color="error" variant="h4">
+                            {message}
+                        </Typography>
+                        <Typography color="#999">
+                            Please help us to fight against fake products by
+                            reporting it!
+                        </Typography>
+
+                        <br />
+                        <br />
+
+                        <TextField
+                            label="Product Name"
+                            value={productName}
+                            onChange={(e) => setProductName(e.target.value)}
+                        />
+                    </CardContent>
+                    <CardActions
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                        }}
+                    >
+                        <Button color="warning">Take Product Picture</Button>
+                        <div style={{ height: 10 }}></div>
+                        <Button
+                            color="warning"
+                            variant="contained"
+                            onClick={handleQrReport}
+                            disabled={processing}
+                        >
+                            Send Report
+                        </Button>
+                    </CardActions>
+                </Card>
+            ) : (
+                <Card>
+                    <CardContent>
+                        <Typography color="success" variant="h4">
+                            {message}
+                        </Typography>
+                    </CardContent>
+                </Card>
+            )}
             {prodData && (
                 <>
                     <p>
@@ -134,6 +207,18 @@ const Authenticator = () => {
                     <p>
                         <b>Qty : </b>
                         {prodData.qty}
+                    </p>
+                    <p>
+                        <b>Batch ID : </b>
+                        {prodData.batch_id}
+                    </p>
+                    <p>
+                        <b>Lot ID : </b>
+                        {prodData.lot_id}
+                    </p>
+                    <p>
+                        <b>Manufacturing Date : </b>
+                        {new Date(prodData.mfg_date).toLocaleDateString()}
                     </p>
                     <p>
                         <b>Description : </b>

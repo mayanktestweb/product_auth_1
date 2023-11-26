@@ -1,5 +1,8 @@
 import React from "react";
-import { LocationInterface } from "../providers/appDataProvider";
+import {
+    AppDataContext,
+    LocationInterface,
+} from "../providers/appDataProvider";
 import {
     Card,
     CardActions,
@@ -37,6 +40,14 @@ const UserGeolocation = ({ setLocation }: UserGeolocationProps) => {
         );
     };
 
+    let { setName, setMobileNumber } = React.useContext(AppDataContext);
+
+    let handleLogout = () => {
+        localStorage.removeItem("user");
+        if (setName) setName(undefined);
+        if (setMobileNumber) setMobileNumber(undefined);
+    };
+
     return (
         <Card>
             <CardContent>
@@ -47,8 +58,8 @@ const UserGeolocation = ({ setLocation }: UserGeolocationProps) => {
             <CardActions
                 style={{
                     display: "flex",
+                    flexDirection: "column",
                     justifyContent: "center",
-                    alignItems: "center",
                 }}
             >
                 <Button
@@ -57,6 +68,14 @@ const UserGeolocation = ({ setLocation }: UserGeolocationProps) => {
                     onClick={handleGetLocation}
                 >
                     Get Location
+                </Button>
+                <div style={{ height: "2rem" }}></div>
+                <Button
+                    color="error"
+                    onClick={handleLogout}
+                    variant="contained"
+                >
+                    Logout
                 </Button>
             </CardActions>
         </Card>

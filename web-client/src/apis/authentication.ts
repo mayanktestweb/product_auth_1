@@ -30,18 +30,20 @@ export const sendQRReport = ({
     latitude,
     longitude,
     reason,
+    product_name,
 }: {
     mobileNumber: string;
     latitude: number;
     longitude: number;
     reason: string;
+    product_name: string;
 }) => {
     return new Promise((resolve, reject) => {
         let url = BASE_URL + "/qr_reports";
         axios({
             method: "POST",
             url,
-            data: { mobileNumber, latitude, longitude, reason },
+            data: { mobileNumber, latitude, longitude, reason, product_name },
         })
             .then((res) => resolve(res.data))
             .catch((err) => reject(err));
